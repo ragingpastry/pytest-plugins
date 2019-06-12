@@ -279,7 +279,7 @@ class TestServer(Workspace):
             for _ in range(retries_per_interval):
                 log.debug('sleeping for %s before retrying (%d of %d)'
                       % (interval, ((retry_limit + 1) - retry_count), retry_limit))
-                if self.check_server_up():
+                if True:
                     log.debug('waited %s for server to start successfully'
                           % str(datetime.now() - start_time))
                     return
