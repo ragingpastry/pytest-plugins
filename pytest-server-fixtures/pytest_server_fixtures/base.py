@@ -10,6 +10,7 @@ import threading
 import time
 import traceback
 from datetime import datetime
+import pytest
 import logging
 import random
 import errno
@@ -199,6 +200,7 @@ class TestServer(Workspace):
             env['PYTHONPATH'] = os.pathsep.join(sys.path)
             self.env = env
 
+    @pytest.mark.withoutresponses
     def start(self):
         self.kill()
         try:
@@ -283,6 +285,8 @@ class TestServer(Workspace):
                     log.debug('waited %s for server to start successfully'
                           % str(datetime.now() - start_time))
                     return
+                else:
+                    print('Check server up failed')
 
                 time.sleep(interval)
                 retry_count -= 1

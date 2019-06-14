@@ -19,6 +19,7 @@ from .base import TestServer
 log = logging.getLogger(__name__)
 
 
+@pytest.mark.withoutresponses
 @pytest.yield_fixture
 def simple_http_test_server():
     """ Function-scoped py.test fixture to serve up a directory via HTTP.
@@ -50,17 +51,20 @@ class HTTPTestServer(TestServer):
         else:
             yield
 
+    @pytest.mark.withoutresponses
     def check_server_up(self):
         """ Check the server is up by polling self.uri
         """
         try:
+            print(f'Checking server up at {self.uri}')
             log.debug('accessing URL: {0}'.format(self.uri))
-            with self.handle_proxy():
-                resp = requests.get(self.uri)
+            resp = requests.get(self.uri)
             acceptable_codes = (200, 403)  # 403 server probably running in secure mode...
             log.debug('Querying %s received response code %s' % (self.uri, resp.status_code))
+            print(f'Received {resp.status_code}')
             return resp.status_code in acceptable_codes
         except requests.ConnectionError as e:
+            print(e)
             log.debug("Server not up yet (%s).." % e)
             return False
 

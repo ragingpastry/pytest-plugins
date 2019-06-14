@@ -19,6 +19,7 @@ from .http import HTTPTestServer
 
 log = logging.getLogger(__name__)
 
+@pytest.mark.withoutresponses
 def _s3_server(request):
     server = MinioServer()
     server.start()
@@ -26,6 +27,7 @@ def _s3_server(request):
     return server
 
 
+@pytest.mark.withoutresponses
 @pytest.fixture(scope="session")
 @requires_config(CONFIG, ['minio_executable'])
 def s3_server(request):
@@ -40,6 +42,7 @@ def s3_server(request):
 BucketInfo = namedtuple('BucketInfo', ['client', 'name'])
 # Minio is a little too slow to start for each function call
 # Start it once per session and get a new bucket for each function instead.
+@pytest.mark.withoutresponses
 @pytest.fixture(scope="function")
 def s3_bucket(s3_server):  # pylint: disable=redefined-outer-name
     """
